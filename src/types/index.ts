@@ -19,6 +19,8 @@ export interface User {
   codigo: string;       // único
   email: string;
   tipo: 'estudiante' | 'docente';
+  passwordHash?: string;
+  createdAt?: string;
 }
 
 export interface Loan {
