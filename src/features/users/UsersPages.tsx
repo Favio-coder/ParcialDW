@@ -70,14 +70,13 @@ export function LoginPage({ onSignIn }: AuthPageProps) {
   }
 
   return (
-    <div className="grid min-h-[min(720px,calc(100vh-220px))] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 lg:grid-cols-[1.05fr_0.95fr]">
+<div className="mx-auto flex w-full max-w-lg items-center justify-center rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5">
+  <section className="w-full px-6 py-6 sm:px-8">
+    <div className="w-full">
 
-
-      <section className="flex items-center justify-center px-6 py-10 sm:px-12">
-        <div className="w-full max-w-md">
           <BrandIntro title="Bienvenido de nuevo" description="Inicia sesión para acceder a los servicios de tu biblioteca." />
           {error && <AuthMessage>{error}</AuthMessage>}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <label className="block">
               <span className="mb-2 block text-sm font-semibold text-slate-700">Correo electrónico</span>
               <input
@@ -110,11 +109,11 @@ export function LoginPage({ onSignIn }: AuthPageProps) {
               <LockKeyhole size={17} /> {isSubmitting ? 'Validando acceso…' : 'Iniciar sesión'} <ArrowRight size={17} />
             </button>
           </form>
-          <p className="mt-6 text-center text-sm text-slate-600">
+          <p className="mt-4 text-center text-sm text-slate-600">
             ¿Aún no tienes una cuenta?{' '}
             <Link to={ROUTES.register} className="font-bold text-emerald-800 hover:text-emerald-950">Regístrate aquí</Link>
           </p>
-          <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
             <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Acceso de administrador · demostración</p>
             <p className="mt-2 text-sm text-amber-950"><span className="font-semibold">Correo:</span> {ADMIN_CREDENTIALS.email}</p>
             <p className="text-sm text-amber-950"><span className="font-semibold">Contraseña:</span> {ADMIN_CREDENTIALS.password}</p>
@@ -172,8 +171,8 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 lg:grid-cols-[0.72fr_1.28fr]">
-      <aside className="relative hidden overflow-hidden bg-emerald-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+    <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5">
+      {/* <aside className="relative hidden overflow-hidden bg-emerald-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full border-38 border-amber-300/10" />
         <div className="relative">
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-300 text-emerald-950"><UserPlus size={23} /></span>
@@ -186,7 +185,7 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
           <p className="flex items-center gap-2"><CheckCircle2 size={17} className="text-amber-300" /> Solicitud de préstamos</p>
           <p className="flex items-center gap-2"><CheckCircle2 size={17} className="text-amber-300" /> Historial personal</p>
         </div>
-      </aside>
+      </aside> */}
       <section className="px-6 py-9 sm:px-10 lg:px-12">
         <BrandIntro title="Crea tu cuenta" description="Completa tus datos universitarios para registrarte en la biblioteca." />
         {error && <AuthMessage>{error}</AuthMessage>}
