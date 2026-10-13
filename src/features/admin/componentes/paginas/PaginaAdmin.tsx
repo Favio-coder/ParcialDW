@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { FolderTree, Library } from 'lucide-react';
+import { FolderTree, Library, Plus } from 'lucide-react';
 import { useCategorias } from '../../hooks/useCategorias';
 import { useLibros } from '../../hooks/useLibros';
 import FormularioCategoria from '../FormularioCategoria';
 import ListaCategorias from '../ListaCategorias';
 import FormularioLibro from '../FormularioLibro';
 import ListaLibros from '../ListaLibros';
-import type { Category, Book } from '../.././types';
+import type { Category, Book } from '../../../../types';
 
 export default function PaginaAdmin() {
   const {
@@ -27,18 +27,19 @@ export default function PaginaAdmin() {
   const [libroEditar, setLibroEditar] = useState<Book | null>(null);
 
   return (
-    <section className="min-h-screen bg-plomo-900 text-plomo-50 p-4 sm:p-8">
-      <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
-        <Library className="text-amarillo-500" /> Panel de Administración
+    <div className="flex flex-col gap-6">
+      <h1 className="text-2xl font-bold text-plomo-800">
+        Gestión de Libros y Categorías
       </h1>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        {/* Categorías */}
-        <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-amarillo-400">
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* ==== CATEGORÍAS ==== */}
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold flex items-center gap-2 text-uncp-700">
             <FolderTree size={20} /> Categorías
           </h2>
           <FormularioCategoria
+            key={catEditar?.id ?? 'nueva-cat'}
             categoriaEditar={catEditar}
             onCancelarEdicion={() => setCatEditar(null)}
             onGuardar={(nombre) =>
@@ -50,14 +51,15 @@ export default function PaginaAdmin() {
             onEditar={(c) => setCatEditar(c)}
             onEliminar={eliminarCat}
           />
-        </div>
+        </section>
 
-        {/* Libros */}
-        <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-amarillo-400">
-            <Library size={20} /> Libros
+        {/* ==== LIBROS ==== */}
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold flex items-center gap-2 text-uncp-700">
+            <Plus size={20} /> Nuevo Libro
           </h2>
           <FormularioLibro
+            key={libroEditar?.id ?? 'nuevo-libro'}
             categorias={categorias}
             libroEditar={libroEditar}
             onCancelarEdicion={() => setLibroEditar(null)}
@@ -67,12 +69,13 @@ export default function PaginaAdmin() {
                 : agregarLibro(libro)
             }
           />
-        </div>
+        </section>
       </div>
 
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-3 text-amarillo-400">
-          Listado de libros
+      {/* ==== LISTADO ==== */}
+      <section>
+        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2 text-uncp-700">
+          <Library size={20} /> Listado de libros
         </h2>
         <ListaLibros
           libros={libros}
@@ -80,7 +83,7 @@ export default function PaginaAdmin() {
           onEditar={(b) => setLibroEditar(b)}
           onEliminar={eliminarLibro}
         />
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

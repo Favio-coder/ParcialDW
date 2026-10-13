@@ -7,40 +7,49 @@ interface Props {
   onEliminar: (id: string) => void;
 }
 
-export default function ListaCategorias({ categorias, onEditar, onEliminar }: Props) {
+export default function ListaCategorias({
+  categorias,
+  onEditar,
+  onEliminar,
+}: Props) {
   if (categorias.length === 0) {
     return (
-      <p className="text-plomo-300 text-sm italic p-4 bg-plomo-800 rounded-xl border border-plomo-600">
-        No hay categorías registradas.
-      </p>
+      <div className="text-center py-8 bg-plomo-50 border border-dashed border-plomo-300 rounded-lg">
+        <Tag size={32} className="mx-auto text-plomo-300 mb-2" />
+        <p className="text-sm text-plomo-500">
+          No hay categorías registradas
+        </p>
+      </div>
     );
   }
 
   return (
-    <ul className="grid gap-2">
+    <ul className="space-y-2">
       {categorias.map((c) => (
         <li
           key={c.id}
-          className="flex items-center justify-between bg-plomo-800 border border-plomo-600 rounded-xl px-4 py-3"
+          className="flex items-center justify-between bg-white border border-plomo-200 rounded-lg px-4 py-3 hover:border-uncp-300 hover:shadow-sm transition"
         >
-          <span className="flex items-center gap-2 text-plomo-50">
-            <Tag size={16} className="text-amarillo-500" />
+          <span className="flex items-center gap-3 text-plomo-800 text-sm font-medium">
+            <span className="w-8 h-8 rounded-md bg-uncp-50 text-uncp-700 flex items-center justify-center">
+              <Tag size={16} />
+            </span>
             {c.nombre}
           </span>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={() => onEditar(c)}
-              className="p-2 rounded-lg bg-plomo-700 hover:bg-plomo-600 text-amarillo-400 transition"
+              className="p-2 rounded-md bg-plomo-100 hover:bg-uncp-50 text-plomo-600 hover:text-uncp-700 transition"
               title="Editar"
             >
-              <Pencil size={16} />
+              <Pencil size={15} />
             </button>
             <button
               onClick={() => onEliminar(c.id)}
-              className="p-2 rounded-lg bg-plomo-700 hover:bg-red-600 text-red-300 hover:text-white transition"
+              className="p-2 rounded-md bg-plomo-100 hover:bg-red-50 text-plomo-600 hover:text-red-600 transition"
               title="Eliminar"
             >
-              <Trash2 size={16} />
+              <Trash2 size={15} />
             </button>
           </div>
         </li>

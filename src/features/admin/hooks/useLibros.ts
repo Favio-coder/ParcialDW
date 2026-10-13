@@ -26,27 +26,37 @@ export const useLibros = () => {
   const agregar = (libro: Omit<Book, 'id'>) => {
     const error = validar(libro);
     if (error) {
-      Swal.fire('Error', error, 'error');
+      Swal.fire('Error de validación', error, 'error');
       return false;
     }
     const nuevo: Book = { ...libro, id: crypto.randomUUID() };
     const lista = [...libros, nuevo];
     set(KEYS.books, lista);
     setLibros(lista);
-    Swal.fire('Listo', 'Libro registrado', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Libro registrado',
+      timer: 1500,
+      showConfirmButton: false,
+    });
     return true;
   };
 
   const editar = (id: string, libro: Omit<Book, 'id'>) => {
     const error = validar(libro, id);
     if (error) {
-      Swal.fire('Error', error, 'error');
+      Swal.fire('Error de validación', error, 'error');
       return false;
     }
     const lista = libros.map((b) => (b.id === id ? { ...b, ...libro } : b));
     set(KEYS.books, lista);
     setLibros(lista);
-    Swal.fire('Actualizado', 'Libro modificado', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Libro actualizado',
+      timer: 1500,
+      showConfirmButton: false,
+    });
     return true;
   };
 
@@ -58,13 +68,19 @@ export const useLibros = () => {
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
+      confirmButtonColor: '#0f5540',
+      cancelButtonColor: '#707c78',
     });
     if (!res.isConfirmed) return;
     const lista = libros.filter((b) => b.id !== id);
     set(KEYS.books, lista);
     setLibros(lista);
-    Swal.fire('Eliminado', 'Libro borrado', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Libro eliminado',
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   return { libros, agregar, editar, eliminar };

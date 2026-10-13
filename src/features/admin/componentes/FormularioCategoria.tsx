@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Plus, Save, X } from 'lucide-react';
 import type { Category } from '../../../types';
 
@@ -13,11 +13,7 @@ export default function FormularioCategoria({
   categoriaEditar,
   onCancelarEdicion,
 }: Props) {
-  const [nombre, setNombre] = useState('');
-
-  useEffect(() => {
-    setNombre(categoriaEditar?.nombre ?? '');
-  }, [categoriaEditar]);
+  const [nombre, setNombre] = useState(categoriaEditar?.nombre ?? '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,19 +24,19 @@ export default function FormularioCategoria({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col sm:flex-row gap-2 bg-plomo-800 p-4 rounded-xl border border-plomo-600"
+      className="flex flex-col sm:flex-row gap-2 bg-plomo-50 p-4 rounded-lg border border-plomo-200"
     >
       <input
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
-        placeholder="Nombre de categoría"
-        className="flex-1 px-4 py-2 rounded-lg bg-plomo-900 border border-plomo-600 text-plomo-50 focus:border-amarillo-500 outline-none"
+        placeholder="Nombre de la categoría"
+        className="flex-1 px-3 py-2 text-sm rounded-md border border-plomo-300 bg-white text-plomo-800 placeholder-plomo-400 focus:border-uncp-500 focus:ring-2 focus:ring-uncp-500/20 outline-none transition"
       />
       <button
         type="submit"
-        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amarillo-500 hover:bg-amarillo-600 text-plomo-900 font-semibold transition"
+        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-uncp-700 hover:bg-uncp-800 text-white text-sm font-semibold transition shadow-sm"
       >
-        {categoriaEditar ? <Save size={18} /> : <Plus size={18} />}
+        {categoriaEditar ? <Save size={16} /> : <Plus size={16} />}
         {categoriaEditar ? 'Guardar' : 'Agregar'}
       </button>
       {categoriaEditar && (
@@ -50,9 +46,9 @@ export default function FormularioCategoria({
             setNombre('');
             onCancelarEdicion?.();
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-plomo-700 hover:bg-plomo-600 text-plomo-50 transition"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-plomo-200 hover:bg-plomo-300 text-plomo-700 text-sm font-medium transition"
         >
-          <X size={18} /> Cancelar
+          <X size={16} /> Cancelar
         </button>
       )}
     </form>

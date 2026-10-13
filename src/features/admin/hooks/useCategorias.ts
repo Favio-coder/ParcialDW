@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { KEYS, get, set } from '../../../lib/storage';
+import { validarCategoria } from '../../../lib/validaciones';
 import type { Category } from '../../../types';
 
 export const useCategorias = () => {
@@ -9,11 +10,12 @@ export const useCategorias = () => {
   );
 
   const agregar = (nombre: string) => {
-    const limpio = nombre.trim();
-    if (!limpio) {
-      Swal.fire('Error', 'El nombre es obligatorio', 'error');
+    const error = validarCategoria(nombre);
+    if (error) {
+      Swal.fire('Validación', error, 'warning');
       return false;
     }
+    const limpio = nombre.trim();
     const existe = categorias.some(
       (c) => c.nombre.toLowerCase() === limpio.toLowerCase()
     );
@@ -25,14 +27,27 @@ export const useCategorias = () => {
     const lista = [...categorias, nueva];
     set(KEYS.categories, lista);
     setCategorias(lista);
-    Swal.fire('Listo', 'Categoría registrada', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Categoría registrada',
+      timer: 1400,
+      showConfirmButton: false,
+    });
     return true;
   };
 
   const editar = (id: string, nombre: string) => {
+    const error = validarCategoria(nombre);
+    if (error) {
+      Swal.fire('Validación', error, 'warning');
+      return false;
+    }
     const limpio = nombre.trim();
-    if (!limpio) {
-      Swal.fire('Error', 'El nombre es obligatorio', 'error');
+    const duplicado = categorias.some(
+      (c) => c.id !== id && c.nombre.toLowerCase() === limpio.toLowerCase()
+    );
+    if (duplicado) {
+      Swal.fire('Duplicado', 'Ya existe otra categoría con ese nombre', 'warning');
       return false;
     }
     const lista = categorias.map((c) =>
@@ -40,7 +55,12 @@ export const useCategorias = () => {
     );
     set(KEYS.categories, lista);
     setCategorias(lista);
-    Swal.fire('Actualizado', 'Categoría modificada', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Categoría actualizada',
+      timer: 1400,
+      showConfirmButton: false,
+    });
     return true;
   };
 
@@ -52,13 +72,19 @@ export const useCategorias = () => {
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
+      confirmButtonColor: '#0f5540',
+      cancelButtonColor: '#707c78',
     });
     if (!res.isConfirmed) return;
     const lista = categorias.filter((c) => c.id !== id);
     set(KEYS.categories, lista);
     setCategorias(lista);
-    Swal.fire('Eliminado', 'Categoría borrada', 'success');
+    Swal.fire({
+      icon: 'success',
+      title: 'Categoría eliminada',
+      timer: 1400,
+      showConfirmButton: false,
+    });
   };
 
   return { categorias, agregar, editar, eliminar };

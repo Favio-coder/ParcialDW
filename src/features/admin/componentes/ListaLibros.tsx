@@ -19,56 +19,91 @@ export default function ListaLibros({
 
   if (libros.length === 0) {
     return (
-      <p className="text-plomo-300 text-sm italic p-4 bg-plomo-800 rounded-xl border border-plomo-600">
-        No hay libros registrados.
-      </p>
+      <div className="text-center py-10 bg-plomo-50 border border-dashed border-plomo-300 rounded-lg">
+        <BookOpen size={36} className="mx-auto text-plomo-300 mb-2" />
+        <p className="text-sm text-plomo-500">No hay libros registrados</p>
+      </div>
     );
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {libros.map((b) => (
-        <article
-          key={b.id}
-          className="bg-plomo-800 border border-plomo-600 rounded-xl p-4 flex flex-col gap-2"
-        >
-          <header className="flex items-start justify-between gap-2">
-            <h3 className="text-plomo-50 font-semibold flex items-center gap-2">
-              <BookOpen size={18} className="text-amarillo-500" />
-              {b.titulo}
-            </h3>
-            <span
-              className={`text-xs px-2 py-1 rounded-full ${
-                b.stock > 0
-                  ? 'bg-amarillo-500 text-plomo-900 font-semibold'
-                  : 'bg-red-600 text-white'
+    <div className="overflow-x-auto rounded-lg border border-plomo-200 bg-white">
+      <table className="w-full text-sm">
+        <thead className="bg-uncp-900 text-white">
+          <tr>
+            <th className="text-left px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              Título
+            </th>
+            <th className="text-left px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              Autor
+            </th>
+            <th className="text-left px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              ISBN
+            </th>
+            <th className="text-left px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              Categoría
+            </th>
+            <th className="text-center px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              Stock
+            </th>
+            <th className="text-center px-4 py-3 font-semibold uppercase text-xs tracking-wide">
+              Acciones
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {libros.map((b, i) => (
+            <tr
+              key={b.id}
+              className={`border-t border-plomo-100 hover:bg-uncp-50/40 transition ${
+                i % 2 === 0 ? 'bg-white' : 'bg-plomo-50/40'
               }`}
             >
-              Stock: {b.stock}
-            </span>
-          </header>
-          <p className="text-sm text-plomo-300">Autor: {b.autor}</p>
-          <p className="text-sm text-plomo-300">ISBN: {b.isbn}</p>
-          <p className="text-sm text-plomo-300">
-            Categoría: {nombreCategoria(b.categoryId)}
-          </p>
-
-          <footer className="flex gap-2 mt-auto pt-2">
-            <button
-              onClick={() => onEditar(b)}
-              className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-plomo-700 hover:bg-plomo-600 text-amarillo-400 transition"
-            >
-              <Pencil size={16} /> Editar
-            </button>
-            <button
-              onClick={() => onEliminar(b.id)}
-              className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-plomo-700 hover:bg-red-600 text-red-300 hover:text-white transition"
-            >
-              <Trash2 size={16} /> Eliminar
-            </button>
-          </footer>
-        </article>
-      ))}
+              <td className="px-4 py-3 font-medium text-plomo-800">
+                {b.titulo}
+              </td>
+              <td className="px-4 py-3 text-plomo-600">{b.autor}</td>
+              <td className="px-4 py-3 text-plomo-500 font-mono text-xs">
+                {b.isbn}
+              </td>
+              <td className="px-4 py-3">
+                <span className="inline-block px-2.5 py-1 rounded-full bg-uncp-50 text-uncp-700 text-xs font-medium border border-uncp-100">
+                  {nombreCategoria(b.categoryId)}
+                </span>
+              </td>
+              <td className="px-4 py-3 text-center">
+                <span
+                  className={`inline-block min-w-[42px] px-2.5 py-1 rounded-full text-xs font-bold ${
+                    b.stock > 0
+                      ? 'bg-amarillo-400 text-plomo-900'
+                      : 'bg-red-100 text-red-700'
+                  }`}
+                >
+                  {b.stock}
+                </span>
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex justify-center gap-1.5">
+                  <button
+                    onClick={() => onEditar(b)}
+                    className="p-2 rounded-md bg-plomo-100 hover:bg-uncp-100 text-plomo-600 hover:text-uncp-700 transition"
+                    title="Editar"
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    onClick={() => onEliminar(b.id)}
+                    className="p-2 rounded-md bg-plomo-100 hover:bg-red-100 text-plomo-600 hover:text-red-600 transition"
+                    title="Eliminar"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
