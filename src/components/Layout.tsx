@@ -14,9 +14,17 @@ export function Layout({ session, onSignOut }: LayoutProps) {
       <header className="border-b border-emerald-900/10 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link to={session?.role === 'admin' ? ROUTES.adminUsers : ROUTES.login} className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-800 text-amber-300">
+            {/* <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-800 text-amber-300">
               <BookOpen size={23} strokeWidth={2.2} />
+            </span> */}
+
+
+            {/* Llamar logo de la univrsidad */}
+            <span className="flex h-11 w-11 items-center justify-center">
+              <img src="/logo/logoUncp.png" alt="Logo de la UNCP" />
             </span>
+            
+
             <span>
               <span className="block text-sm font-extrabold tracking-wide text-emerald-950">BIBLIOTECA CENTRAL</span>
               <span className="block text-xs font-medium text-slate-500">Universidad Nacional del Centro del Perú</span>

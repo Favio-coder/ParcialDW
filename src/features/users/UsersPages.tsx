@@ -31,10 +31,15 @@ function AuthMessage({ children }: { children: string }) {
 
 function BrandIntro({ title, description }: { title: string; description: string }) {
   return (
-    <div className="mb-8">
-      <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-800 text-amber-300 shadow-lg shadow-emerald-900/10">
-        <BookOpen size={25} />
+    <div className="mb-10">
+      {/* <span className="flex h-25 w-25 items-center justify-center align-middle">
+              <img src="/logo/logoUncp.png" alt="Logo de la UNCP" />
+      </span> */}
+
+      <span className="flex h-25 w-25 items-center justify-center">
+        <img src="/logo/logoUncp.png" alt="Logo de la UNCP" className="h-auto w-auto" />
       </span>
+
       <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Biblioteca universitaria</p>
       <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
       <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">{description}</p>
@@ -66,24 +71,7 @@ export function LoginPage({ onSignIn }: AuthPageProps) {
 
   return (
     <div className="grid min-h-[min(720px,calc(100vh-220px))] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="relative hidden overflow-hidden bg-emerald-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full border-36 border-amber-300/10" />
-        <div className="absolute -bottom-36 -left-28 h-96 w-96 rounded-full border-[48px] border-emerald-500/10" />
-        <div className="relative">
-          <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-300 text-emerald-950">
-            <LibraryBig size={28} />
-          </span>
-          <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">UNCP · Huancayo</p>
-          <h2 className="mt-3 max-w-md text-4xl font-extrabold leading-tight tracking-tight">Conocimiento que abre caminos.</h2>
-          <p className="mt-5 max-w-sm text-base leading-7 text-emerald-100/80">
-            Encuentra tus próximas lecturas, solicita préstamos y mantén tu vida académica organizada.
-          </p>
-        </div>
-        <div className="relative flex items-center gap-3 text-sm text-emerald-100/80">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-amber-300"><ShieldCheck size={18} /></span>
-          Acceso para estudiantes, docentes y administración
-        </div>
-      </section>
+
 
       <section className="flex items-center justify-center px-6 py-10 sm:px-12">
         <div className="w-full max-w-md">
@@ -186,7 +174,7 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
   return (
     <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 lg:grid-cols-[0.72fr_1.28fr]">
       <aside className="relative hidden overflow-hidden bg-emerald-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full border-[38px] border-amber-300/10" />
+        <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full border-38 border-amber-300/10" />
         <div className="relative">
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-300 text-emerald-950"><UserPlus size={23} /></span>
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Únete a la comunidad</p>
@@ -324,7 +312,7 @@ export function UsersPage() {
         </div>
         {filteredUsers.length ? (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
+            <table className="w-full min-w-190 text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-5 py-3.5 font-semibold">Usuario</th>
