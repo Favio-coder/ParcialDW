@@ -6,6 +6,7 @@ import { LoginPage, RegisterPage, UsersPage, WelcomePage } from './features/user
 import { get, KEYS, set } from './lib/storage'
 import { ROUTES } from './lib/routes'
 import type { Session } from './features/users/types'
+import PaginaAdmin from './features/admin/componentes/paginas/PaginaAdmin'
 
 function App() {
   const [session, setSession] = useState<Session | null>(() => get<Session | null>(KEYS.session, null))
@@ -34,6 +35,22 @@ function App() {
             element={
               <ProtectedRoute session={session} requiredRole="admin">
                 <UsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.adminBooks}
+            element={
+              <ProtectedRoute session={session} requiredRole="admin">
+                <PaginaAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.adminCategories}
+            element={
+              <ProtectedRoute session={session} requiredRole="admin">
+                <PaginaAdmin />
               </ProtectedRoute>
             }
           />
