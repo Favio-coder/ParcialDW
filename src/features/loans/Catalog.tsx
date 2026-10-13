@@ -1,15 +1,29 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Search, BookOpen, Library, CircleCheck, CircleX } from "lucide-react";
 import { get, KEYS } from "../../lib/storage";
+import { ROUTES } from "../../lib/routes";
 import type { Book, Category } from "../../types";
 
 export default function Catalog() {
-  const [books] = useState<Book[]>(() => get<Book[]>(KEYS.books, []));
-  const [categories] = useState<Category[]>(() =>
-    get<Category[]>(KEYS.categories, []),
-  );
+  const [books, setBooks] = useState<Book[]>(() => get<Book[]>(KEYS.books, []));
+  const [categories, setCategories] = useState<Category[]>(() =>
+    get<Category[]>(KEYS.categories, []));
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("todas");
+
+  useEffect(() => {
+    const refresh = () => {
+      setBooks(get<Book[]>(KEYS.books, []));
+      setCategories(get<Category[]>(KEYS.categories, []));
+    };
+    window.addEventListener("storage", refresh);
+    window.addEventListener("storage-updated", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("storage-updated", refresh);
+    };
+  }, []);
 
   const filteredBooks = useMemo(() => {
     const term = search.trim().toLocaleLowerCase();
@@ -28,7 +42,7 @@ export default function Catalog() {
     "Categoría no disponible";
 
   return (
-    <main className="min-h-screen bg-zinc-100 px-4 py-8 text-zinc-900 sm:px-6 lg:px-10">
+    <div className="px-4 py-8 text-zinc-900 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8">
           <div className="mb-3 flex items-center gap-3">
@@ -182,11 +196,18 @@ export default function Catalog() {
                   </div>
 
                   <div className="mt-auto pt-5">
-                    <p className="rounded-lg bg-zinc-50 px-3 py-2 text-center text-xs text-zinc-600">
-                      {available
-                        ? "Disponible para solicitar un préstamo"
-                        : "No es posible solicitar este libro"}
-                    </p>
+                    <Link
+                      to={ROUTES.loan.replace(":bookId", book.id)}
+                      aria-disabled={!available}
+                      className={`block rounded-lg px-3 py-2 text-center text-sm font-semibold transition ${
+                        available
+                          ? "bg-emerald-800 text-white hover:bg-emerald-900"
+                          : "pointer-events-none bg-zinc-100 text-zinc-400"
+                      }`}
+                      tabIndex={available ? undefined : -1}
+                    >
+                      {available ? "Solicitar préstamo" : "Sin ejemplares disponibles"}
+                    </Link>
                   </div>
                 </article>
               );
@@ -194,6 +215,6 @@ export default function Catalog() {
           </section>
         )}
       </div>
-    </main>
+    </div>
   );
 }

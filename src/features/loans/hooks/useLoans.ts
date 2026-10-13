@@ -1,6 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import type { Book, Loan } from "../../../types";
 import { get, set, KEYS } from "../../../lib/storage";
+import { generateReceiptCode } from "../../receipt/createReceipt";
 
 interface CreateLoanResult {
   success: boolean;
@@ -14,6 +16,15 @@ export function useLoans() {
   const refreshLoans = useCallback(() => {
     setLoans(get<Loan[]>(KEYS.loans, []));
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("storage", refreshLoans);
+    window.addEventListener("storage-updated", refreshLoans);
+    return () => {
+      window.removeEventListener("storage", refreshLoans);
+      window.removeEventListener("storage-updated", refreshLoans);
+    };
+  }, [refreshLoans]);
 
   const createLoan = useCallback(
     (userId: string, bookId: string): CreateLoanResult => {
@@ -50,7 +61,7 @@ export function useLoans() {
 
       const loan: Loan = {
         id: crypto.randomUUID(),
-        codigo: `PRE-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+        codigo: generateReceiptCode(currentLoans.map((item) => item.codigo)),
         userId,
         bookId,
         fechaPrestamo: now.toISOString(),
@@ -78,9 +89,51 @@ export function useLoans() {
     [],
   );
 
+  const returnLoan = useCallback(async (loanId: string): Promise<void> => {
+    const confirmation = await Swal.fire({
+      title: "¿Registrar devolución?",
+      text: "El libro volverá a estar disponible en el inventario.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, registrar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#0f5540",
+    });
+    if (!confirmation.isConfirmed) return;
+
+    const currentLoans = get<Loan[]>(KEYS.loans, []);
+    const loan = currentLoans.find((item) => item.id === loanId);
+    if (!loan || loan.estado !== "activo") {
+      await Swal.fire("Préstamo no disponible", "El préstamo ya fue devuelto o no existe.", "warning");
+      return;
+    }
+
+    const books = get<Book[]>(KEYS.books, []);
+    const returnedLoan: Loan = {
+      ...loan,
+      estado: "devuelto",
+      fechaDevolucion: new Date().toISOString(),
+    };
+    const updatedLoans = currentLoans.map((item) => item.id === loanId ? returnedLoan : item);
+    const updatedBooks = books.map((book) =>
+      book.id === loan.bookId ? { ...book, stock: book.stock + 1 } : book,
+    );
+
+    set(KEYS.books, updatedBooks);
+    set(KEYS.loans, updatedLoans);
+    setLoans(updatedLoans);
+    await Swal.fire({
+      icon: "success",
+      title: "Devolución registrada",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  }, []);
+
   return {
     loans,
     createLoan,
     refreshLoans,
+    returnLoan,
   };
 }

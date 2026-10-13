@@ -27,6 +27,9 @@ export default function FormularioCategoria({
       className="flex flex-col sm:flex-row gap-2 bg-plomo-50 p-4 rounded-lg border border-plomo-200"
     >
       <input
+        required
+        minLength={3}
+        maxLength={50}
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         placeholder="Nombre de la categoría"

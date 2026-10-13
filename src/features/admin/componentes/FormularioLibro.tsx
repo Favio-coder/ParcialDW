@@ -71,6 +71,10 @@ export default function FormularioLibro({
         <div>
           <label className={labelCls}>Título</label>
           <input
+            required
+            minLength={2}
+            maxLength={120}
+            aria-label="Título"
             className={inputCls}
             placeholder="Ej. Cien años de soledad"
             value={form.titulo}
@@ -80,6 +84,10 @@ export default function FormularioLibro({
         <div>
           <label className={labelCls}>Autor</label>
           <input
+            required
+            minLength={3}
+            maxLength={80}
+            aria-label="Autor"
             className={inputCls}
             placeholder="Ej. Gabriel García Márquez"
             value={form.autor}
@@ -89,6 +97,11 @@ export default function FormularioLibro({
         <div>
           <label className={labelCls}>ISBN</label>
           <input
+            required
+            aria-label="ISBN"
+            inputMode="numeric"
+            minLength={10}
+            maxLength={20}
             className={inputCls}
             placeholder="Ej. 978-0307474728"
             value={form.isbn}
@@ -98,6 +111,8 @@ export default function FormularioLibro({
         <div>
           <label className={labelCls}>Categoría</label>
           <select
+            required
+            aria-label="Categoría"
             className={inputCls}
             value={form.categoryId}
             onChange={(e) => cambiar('categoryId', e.target.value)}
@@ -115,7 +130,11 @@ export default function FormularioLibro({
           <input
             className={inputCls}
             type="number"
+            required
             min={0}
+            max={9999}
+            step={1}
+            aria-label="Stock"
             value={form.stock}
             onChange={(e) => cambiar('stock', Number(e.target.value))}
           />

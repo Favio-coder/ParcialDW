@@ -14,4 +14,5 @@ export const get = <T,>(key: string, def: T): T => {
 
 export const set = (key: string, value: unknown) => {
   localStorage.setItem(key, JSON.stringify(value));
+  window.dispatchEvent(new Event('storage-updated'));
 };

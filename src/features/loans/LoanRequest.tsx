@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, BookOpen, CheckCircle2, CircleAlert } from "lucide-react";
 import type { Book, Category } from "../../types";
 import { get, KEYS } from "../../lib/storage";
 import { useLoans } from "./hooks/useLoans";
+import { createLoanReceipt } from "../receipt/createReceipt";
+import { ROUTES } from "../../lib/routes";
 
 interface LoanRequestProps {
   userId: string;
@@ -11,19 +13,31 @@ interface LoanRequestProps {
 
 export default function LoanRequest({ userId }: LoanRequestProps) {
   const { bookId } = useParams<{ bookId: string }>();
-  const navigate = useNavigate();
   const { createLoan } = useLoans();
+  const navigate = useNavigate();
 
   const [books, setBooks] = useState<Book[]>(() =>
     get<Book[]>(KEYS.books, []),
   );
-  const [categories] = useState<Category[]>(() =>
-    get<Category[]>(KEYS.categories, []),
-  );
+  const [categories, setCategories] = useState<Category[]>(() =>
+    get<Category[]>(KEYS.categories, []));
   const [selectedBookId, setSelectedBookId] = useState(bookId ?? "");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const refresh = () => {
+      setBooks(get<Book[]>(KEYS.books, []));
+      setCategories(get<Category[]>(KEYS.categories, []));
+    };
+    window.addEventListener("storage", refresh);
+    window.addEventListener("storage-updated", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("storage-updated", refresh);
+    };
+  }, []);
 
   const selectedBook = books.find((book) => book.id === selectedBookId);
 
@@ -54,20 +68,22 @@ export default function LoanRequest({ userId }: LoanRequestProps) {
       setMessage(result.message);
       setSuccess(result.success);
 
-      if (result.success) {
-        setBooks(get<Book[]>(KEYS.books, []));
+      if (result.success && result.loan) {
+        createLoanReceipt(result.loan.id);
+        navigate(ROUTES.receipt.replace(":loanId", result.loan.id));
       }
-    } catch {
-      setMessage(
-        "No se pudo registrar el préstamo. Comprueba los datos e inténtalo nuevamente.",
-      );
+    } catch (cause) {
+      setMessage(cause instanceof Error
+        ? `No se pudo completar la solicitud: ${cause.message}`
+        : "No se pudo registrar el préstamo. Inténtalo nuevamente.");
+      setSuccess(false);
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 px-4 py-8 text-zinc-900 sm:px-6">
+    <div className="px-4 py-8 text-zinc-900 sm:px-6">
       <div className="mx-auto max-w-3xl">
         <button
           type="button"
@@ -200,6 +216,6 @@ export default function LoanRequest({ userId }: LoanRequestProps) {
           )}
         </form>
       </div>
-    </main>
+    </div>
   );
 }
