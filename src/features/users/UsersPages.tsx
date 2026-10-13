@@ -1,14 +1,13 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import {
   ArrowRight,
   BookOpen,
   CheckCircle2,
   GraduationCap,
-  LibraryBig,
   LockKeyhole,
   Search,
-  ShieldCheck,
   UserPlus,
   UsersRound,
 } from 'lucide-react'
@@ -19,14 +18,6 @@ import { ADMIN_CREDENTIALS, authenticate, getUsers, registerUser } from './userS
 
 interface AuthPageProps {
   onSignIn: (session: Session) => void
-}
-
-function AuthMessage({ children }: { children: string }) {
-  return (
-    <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
-      {children}
-    </div>
-  )
 }
 
 function BrandIntro({ title, description }: { title: string; description: string }) {
@@ -51,19 +42,31 @@ export function LoginPage({ onSignIn }: AuthPageProps) {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError('')
     setIsSubmitting(true)
     try {
       const session = await authenticate(email, password)
       onSignIn(session)
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Bienvenido!',
+        text: session.role === 'admin' ? 'Acceso de administrador concedido.' : 'Has iniciado sesión correctamente.',
+        timer: 1500,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end',
+      })
       navigate(session.role === 'admin' ? ROUTES.adminUsers : ROUTES.catalog, { replace: true })
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'No se pudo iniciar sesión. Inténtalo nuevamente.')
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: cause instanceof Error ? cause.message : 'No se pudo iniciar sesión. Inténtalo nuevamente.',
+        confirmButtonColor: '#059669',
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -75,7 +78,6 @@ export function LoginPage({ onSignIn }: AuthPageProps) {
     <div className="w-full">
 
           <BrandIntro title="Bienvenido de nuevo" description="Inicia sesión para acceder a los servicios de tu biblioteca." />
-          {error && <AuthMessage>{error}</AuthMessage>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <label className="block">
               <span className="mb-2 block text-sm font-semibold text-slate-700">Correo electrónico</span>
@@ -137,7 +139,6 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
     password: '',
   })
   const[confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
 
@@ -148,13 +149,22 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError('')
     if (form.password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres.')
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Contraseña muy corta',
+        text: 'La contraseña debe tener al menos 8 caracteres.',
+        confirmButtonColor: '#059669',
+      })
       return
     }
     if (form.password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.')
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Las contraseñas no coinciden',
+        text: 'Por favor, verifica que ambas contraseñas sean iguales.',
+        confirmButtonColor: '#059669',
+      })
       return
     }
 
@@ -162,9 +172,23 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
     try {
       const session = await registerUser(form)
       onSignIn(session)
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Cuenta creada!',
+        text: 'Tu registro se ha completado correctamente. Bienvenido a la biblioteca.',
+        timer: 2000,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end',
+      })
       navigate(ROUTES.catalog, { replace: true })
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'No se pudo completar el registro. Inténtalo nuevamente.')
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error al registrar',
+        text: cause instanceof Error ? cause.message : 'No se pudo completar el registro. Inténtalo nuevamente.',
+        confirmButtonColor: '#059669',
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -188,7 +212,6 @@ export function RegisterPage({ onSignIn }: AuthPageProps) {
       </aside> */}
       <section className="px-6 py-9 sm:px-10 lg:px-12">
         <BrandIntro title="Crea tu cuenta" description="Completa tus datos universitarios para registrarte en la biblioteca." />
-        {error && <AuthMessage>{error}</AuthMessage>}
         <form onSubmit={handleSubmit} className="grid gap-x-4 gap-y-4 sm:grid-cols-2">
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">Nombres</span>
