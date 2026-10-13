@@ -33,9 +33,14 @@ export function Layout({ session, onSignOut }: LayoutProps) {
           {session && (
             <div className="flex items-center gap-3">
               {session.role === 'admin' ? (
-                <NavLink to={ROUTES.adminUsers} className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-50 sm:flex">
-                  <Users size={17} /> Usuarios
-                </NavLink>
+                <>
+                  <NavLink to={ROUTES.adminUsers} className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-50 sm:flex">
+                    <Users size={17} /> Usuarios
+                  </NavLink>
+                  <NavLink to={ROUTES.adminBooks} className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-50 sm:flex">
+                    <BookOpen size={17} /> Libros y categorías
+                  </NavLink>
+                </>
               ) : (
                 <span className="hidden items-center gap-2 text-sm font-medium text-slate-600 sm:flex">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">

@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@theme {
+  --color-plomo-50:  #f8f9f9;
+  --color-plomo-100: #f0f2f1;
+  --color-plomo-200: #e1e5e3;
+  --color-plomo-300: #c5ccc9;
+  --color-plomo-400: #9aa5a1;
+  --color-plomo-500: #707c78;
+  --color-plomo-600: #4f5a56;
+  --color-plomo-700: #3b4441;
+  --color-plomo-800: #2a312f;
+  --color-plomo-900: #1a1f1e;
+
+  /* Amarillo (acento) */
+  --color-amarillo-300: #ffe066;
+  --color-amarillo-400: #ffd633;
+  --color-amarillo-500: #f5c400;
+  --color-amarillo-600: #d1a800;
+
+  /* Verde UNCP (institucional) */
+  --color-uncp-50:  #eef6f2;
+  --color-uncp-100: #d6ebe1;
+  --color-uncp-200: #a8d5c2;
+  --color-uncp-300: #6fbb9b;
+  --color-uncp-400: #3d9e78;
+  --color-uncp-500: #1f8560;
+  --color-uncp-600: #146a4d;
+  --color-uncp-700: #0f5540;
+  --color-uncp-800: #0d4a3d;
+  --color-uncp-900: #0a3b30;
+  --color-uncp-950: #052019;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
