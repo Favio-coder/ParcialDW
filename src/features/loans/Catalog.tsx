@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, BookOpen, Library, CircleCheck, CircleX } from "lucide-react";
 import { get, KEYS } from "../../lib/storage";
 import type { Book, Category } from "../../types";
 
 export default function Catalog() {
+  const navigate = useNavigate();
+
   const [books] = useState<Book[]>(() => get<Book[]>(KEYS.books, []));
   const [categories] = useState<Category[]>(() =>
     get<Category[]>(KEYS.categories, []),
@@ -181,12 +184,21 @@ export default function Catalog() {
                     </div>
                   </div>
 
-                  <div className="mt-auto pt-5">
+                  <div className="mt-auto space-y-3 pt-5">
                     <p className="rounded-lg bg-zinc-50 px-3 py-2 text-center text-xs text-zinc-600">
                       {available
                         ? "Disponible para solicitar un préstamo"
                         : "No es posible solicitar este libro"}
                     </p>
+
+                    <button
+                      type="button"
+                      disabled={!available}
+                      onClick={() => navigate(`/prestamo/${book.id}`)}
+                      className="w-full rounded-xl bg-zinc-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500"
+                    >
+                      {available ? "Solicitar préstamo" : "Sin stock"}
+                    </button>
                   </div>
                 </article>
               );

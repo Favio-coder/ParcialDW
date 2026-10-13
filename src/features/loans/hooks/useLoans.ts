@@ -37,7 +37,7 @@ export function useLoans() {
         };
       }
 
-      if (book.stock <= 0) {
+      if (!Number.isFinite(book.stock) || book.stock <= 0) {
         return {
           success: false,
           message: "No hay ejemplares disponibles de este libro.",
