@@ -2,11 +2,15 @@ import { useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { LoginPage, RegisterPage, UsersPage, WelcomePage } from './features/users/UsersPages'
+import { LoginPage, RegisterPage, UsersPage } from './features/users/UsersPages'
 import { get, KEYS, set } from './lib/storage'
 import { ROUTES } from './lib/routes'
 import type { Session } from './features/users/types'
 import PaginaAdmin from './features/admin/componentes/paginas/PaginaAdmin'
+import Catalog from './features/loans/Catalog'
+import LoanRequest from './features/loans/LoanRequest'
+import MyLoans from './features/history/MyLoans'
+import ReceiptView from './features/receipt/ReceiptView'
 
 function App() {
   const [session, setSession] = useState<Session | null>(() => get<Session | null>(KEYS.session, null))
@@ -55,12 +59,42 @@ function App() {
             }
           />
           <Route
+            path={ROUTES.adminLoans}
+            element={
+              <ProtectedRoute session={session} requiredRole="admin">
+                <PaginaAdmin showLoansOnly />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path={ROUTES.catalog}
             element={
               <ProtectedRoute session={session} requiredRole="user">
-                <WelcomePage />
+                <Catalog />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path={ROUTES.loan}
+            element={
+              <ProtectedRoute session={session} requiredRole="user">
+                <LoanRequest userId={session?.userId ?? ''} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.myLoans}
+            element={
+              <ProtectedRoute session={session} requiredRole="user">
+                <MyLoans userId={session?.userId} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.receipt}
+            element={session
+              ? <ReceiptView session={session} />
+              : <Navigate to={ROUTES.login} replace />}
           />
           <Route path="*" element={<Navigate to={session ? (session.role === 'admin' ? ROUTES.adminUsers : ROUTES.catalog) : ROUTES.login} replace />} />
         </Route>

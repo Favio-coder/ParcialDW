@@ -3,6 +3,7 @@ export const KEYS = {
   books: 'bib_books',
   users: 'bib_users',
   loans: 'bib_loans',
+  receipts: 'bib_receipts',
   session: 'bib_session',
 };
 
@@ -13,4 +14,5 @@ export const get = <T,>(key: string, def: T): T => {
 
 export const set = (key: string, value: unknown) => {
   localStorage.setItem(key, JSON.stringify(value));
+  window.dispatchEvent(new Event('storage-updated'));
 };

@@ -1,0 +1,34 @@
+/* Paleta institucional (verde, amarillo y plomo) — Persona 3 */
+:root {
+  --uncp-verde: #1b5e3b;
+  --uncp-verde-2: #2e7d4f;
+  --uncp-verde-claro: #e6f2ea;
+  --uncp-amarillo: #e3b505;
+  --uncp-amarillo-claro: #fdf6dc;
+  --uncp-plomo: #4a5560;
+  --uncp-plomo-2: #8a949e;
+  --uncp-plomo-claro: #eef0f2;
+  --uncp-rojo: #b42318;
+  --uncp-rojo-claro: #fdecea;
+  --uncp-borde: #d9dee3;
+}
+
+/* Botones de Persona 3 (prefijo p3- para no chocar con otros estilos) */
+.p3-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.55rem 1rem; border: 0; border-radius: 8px; cursor: pointer;
+  font: inherit; font-weight: 600; font-size: 0.9rem; text-decoration: none;
+  background: var(--uncp-verde); color: #fff; transition: background 0.15s;
+}
+.p3-btn:hover { background: var(--uncp-verde-2); }
+.p3-btn.amarillo { background: var(--uncp-amarillo); color: #2b2b2b; }
+.p3-btn.amarillo:hover { background: #c99f04; }
+.p3-btn.borde { background: #fff; color: var(--uncp-verde); border: 1px solid var(--uncp-borde); }
+.p3-btn.borde:hover { background: var(--uncp-plomo-claro); }
+.p3-btn.sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+/* Insignia de estado */
+.p3-badge { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+.p3-badge.activo { background: var(--uncp-amarillo-claro); color: #8a6a00; }
+.p3-badge.devuelto { background: var(--uncp-verde-claro); color: var(--uncp-verde); }
+.p3-badge.vencido { background: var(--uncp-rojo-claro); color: var(--uncp-rojo); }

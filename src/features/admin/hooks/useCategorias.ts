@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { KEYS, get, set } from '../../../lib/storage';
 import { validarCategoria } from '../../../lib/validaciones';
-import type { Category } from '../../../types';
+import type { Book, Category } from '../../../types';
 
 export const useCategorias = () => {
   const [categorias, setCategorias] = useState<Category[]>(() =>
@@ -65,6 +65,11 @@ export const useCategorias = () => {
   };
 
   const eliminar = async (id: string) => {
+    const hasBooks = get<Book[]>(KEYS.books, []).some((book) => book.categoryId === id);
+    if (hasBooks) {
+      await Swal.fire('Categoría en uso', 'Reasigna o elimina sus libros antes de eliminar esta categoría.', 'warning');
+      return;
+    }
     const res = await Swal.fire({
       title: '¿Eliminar categoría?',
       text: 'Los libros asociados quedarán sin categoría válida',
