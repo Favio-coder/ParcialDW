@@ -3,6 +3,7 @@ export const KEYS = {
   books: 'bib_books',
   users: 'bib_users',
   loans: 'bib_loans',
+  receipts: 'bib_receipts',
   session: 'bib_session',
 };
 
