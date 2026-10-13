@@ -1,14 +1,21 @@
 import { useState } from 'react';
-import { FolderTree, Library, Plus } from 'lucide-react';
+import { BookMarked, FolderTree, Library, Plus, RotateCcw } from 'lucide-react';
 import { useCategorias } from '../../hooks/useCategorias';
 import { useLibros } from '../../hooks/useLibros';
+import { useLoans } from '../../../loans/hooks/useLoans';
+import LoanCard from '../../../history/LoanCard';
+import { get, KEYS } from '../../../../lib/storage';
 import FormularioCategoria from '../FormularioCategoria';
 import ListaCategorias from '../ListaCategorias';
 import FormularioLibro from '../FormularioLibro';
 import ListaLibros from '../ListaLibros';
-import type { Category, Book } from '../../../../types';
+import type { Category, Book, User } from '../../../../types';
 
-export default function PaginaAdmin() {
+interface PaginaAdminProps {
+  showLoansOnly?: boolean;
+}
+
+export default function PaginaAdmin({ showLoansOnly = false }: PaginaAdminProps) {
   const {
     categorias,
     agregar: agregarCat,
@@ -22,6 +29,8 @@ export default function PaginaAdmin() {
     editar: editarLibro,
     eliminar: eliminarLibro,
   } = useLibros();
+  const { loans, returnLoan } = useLoans();
+  const users = get<User[]>(KEYS.users, []);
 
   const [catEditar, setCatEditar] = useState<Category | null>(null);
   const [libroEditar, setLibroEditar] = useState<Book | null>(null);
@@ -29,9 +38,10 @@ export default function PaginaAdmin() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold text-plomo-800">
-        Gestión de Libros y Categorías
+        {showLoansOnly ? 'Gestión de préstamos' : 'Gestión de Libros y Categorías'}
       </h1>
 
+      {!showLoansOnly && <>
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ==== CATEGORÍAS ==== */}
         <section className="flex flex-col gap-3">
@@ -83,6 +93,47 @@ export default function PaginaAdmin() {
           onEditar={(b) => setLibroEditar(b)}
           onEliminar={eliminarLibro}
         />
+      </section>
+      </>}
+
+      <section>
+        <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-uncp-700">
+          <BookMarked size={20} /> Gestión de préstamos
+        </h2>
+        {loans.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-plomo-300 bg-plomo-50 px-4 py-8 text-center text-sm text-plomo-500">
+            Aún no hay préstamos registrados.
+          </p>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {[...loans]
+              .sort((a, b) => b.fechaPrestamo.localeCompare(a.fechaPrestamo))
+              .map((loan) => {
+                const user = users.find((item) => item.id === loan.userId);
+                const book = libros.find((item) => item.id === loan.bookId);
+                return (
+                  <div key={loan.id} className="space-y-2">
+                    <p className="px-1 text-sm font-semibold text-plomo-700">
+                      {user ? `${user.nombres} ${user.apellidos} · ${user.codigo}` : 'Usuario no encontrado'}
+                    </p>
+                    <LoanCard
+                      loan={loan}
+                      book={book}
+                      actions={loan.estado === 'activo' ? (
+                        <button
+                          type="button"
+                          onClick={() => void returnLoan(loan.id)}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-emerald-700 px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
+                        >
+                          <RotateCcw size={14} /> Registrar devolución
+                        </button>
+                      ) : undefined}
+                    />
+                  </div>
+                );
+              })}
+          </div>
+        )}
       </section>
     </div>
   );

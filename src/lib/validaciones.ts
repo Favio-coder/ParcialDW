@@ -1,6 +1,7 @@
 
 // ============ EXPRESIONES ============
 const SOLO_TEXTO = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.,'-]+$/;
+const TEXTO_CON_NUMEROS = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñÜü\s.,'-]+$/;
 const ISBN_PERMITIDO = /^[0-9-\s]+$/;
 
 // ============ CATEGORÍA ============
@@ -19,7 +20,7 @@ export const validarTitulo = (titulo: string): string | null => {
   if (!v) return 'El título es obligatorio';
   if (v.length < 2) return 'Mínimo 2 caracteres';
   if (v.length > 120) return 'Máximo 120 caracteres';
-  if (!SOLO_TEXTO.test(v))
+  if (!TEXTO_CON_NUMEROS.test(v))
     return 'Solo letras, números, espacios y . , - \'';
   return null;
 };

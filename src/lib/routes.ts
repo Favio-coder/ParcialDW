@@ -1,8 +1,10 @@
 export const ROUTES = {
   login: '/',
+  register: '/registro',
   adminBooks: '/admin/libros',
   adminCategories: '/admin/categorias',
   adminUsers: '/admin/usuarios',
+  adminLoans: '/admin/prestamos',
   catalog: '/catalogo',
   loan: '/prestamo/:bookId',
   myLoans: '/mis-prestamos',

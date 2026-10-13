@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { KEYS, get, set } from '../../../lib/storage';
-import type { Book } from '../../../types';
+import { validarAutor, validarCategoriaSeleccionada, validarIsbn, validarStock, validarTitulo } from '../../../lib/validaciones';
+import type { Book, Loan } from '../../../types';
 
 export const useLibros = () => {
   const [libros, setLibros] = useState<Book[]>(() =>
@@ -9,15 +10,19 @@ export const useLibros = () => {
   );
 
   const validar = (libro: Omit<Book, 'id'>, idEditar?: string) => {
-    if (!libro.titulo.trim()) return 'El título es obligatorio';
-    if (!libro.autor.trim()) return 'El autor es obligatorio';
-    if (!libro.isbn.trim()) return 'El ISBN es obligatorio';
-    if (!libro.categoryId) return 'Debes elegir una categoría';
-    if (libro.stock < 0) return 'El stock no puede ser negativo';
+    const error = validarTitulo(libro.titulo)
+      ?? validarAutor(libro.autor)
+      ?? validarIsbn(libro.isbn)
+      ?? validarCategoriaSeleccionada(libro.categoryId)
+      ?? validarStock(libro.stock);
+    if (error) return error;
+    if (!get<{ id: string }[]>(KEYS.categories, []).some((category) => category.id === libro.categoryId)) {
+      return 'La categoría seleccionada ya no existe';
+    }
 
     const actuales = get<Book[]>(KEYS.books, []);
     const isbnDuplicado = actuales.some(
-      (b) => b.isbn === libro.isbn && b.id !== idEditar
+      (b) => b.isbn.replace(/\D/g, '') === libro.isbn.replace(/\D/g, '') && b.id !== idEditar
     );
     if (isbnDuplicado) return 'Ya existe un libro con ese ISBN';
     return null;
@@ -61,6 +66,13 @@ export const useLibros = () => {
   };
 
   const eliminar = async (id: string) => {
+    const hasActiveLoan = get<Loan[]>(KEYS.loans, []).some(
+      (loan) => loan.bookId === id && loan.estado === 'activo',
+    );
+    if (hasActiveLoan) {
+      await Swal.fire('Libro en préstamo', 'No se puede eliminar mientras tenga préstamos activos.', 'warning');
+      return;
+    }
     const res = await Swal.fire({
       title: '¿Eliminar libro?',
       text: 'Esta acción no se puede deshacer',
